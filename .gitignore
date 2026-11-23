@@ -1,5 +1,5 @@
 /result
-/.workbuddy
+.screenshots/
 .tmp-nixondroid/
 *.tar
 *.apk

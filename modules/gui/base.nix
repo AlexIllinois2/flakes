@@ -5,6 +5,6 @@
     brightnessctl
     google-chrome vscodium
     nur.repos.lonerOrz.trae
-    # nur.repos.MCSeekeri.workbuddy
+    nur.repos.MCSeekeri.workbuddy
   ];
 }
