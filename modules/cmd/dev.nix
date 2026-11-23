@@ -8,6 +8,7 @@
   # 这些是 nix 生态里最常规的一套，不算“重量级”，故默认全部启用。
   environment.systemPackages = with pkgs; [
     git
+    gh
 
     # 搜索/筛选
     ripgrep # rg，比 grep 快的递归搜索
