@@ -19,6 +19,9 @@
 
     # ELF 分析（readelf/eu-stack/eu-readelf 等）
     elfutils
+
+    openssl pkg-config
+    rustup
   ];
 
   # zoxide 已在 cmd/zsh.nix 通过 programs.zoxide.enable 启用（它会自动把
