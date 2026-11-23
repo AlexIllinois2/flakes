@@ -1,0 +1,6 @@
+patch:
+  # 候选词个数
+  menu/page_size: 9
+
+  # 默认使用英文半角标点（switches 第 2 项 ascii_punct 的默认值设为 1）
+  "switches/@1/reset": 1

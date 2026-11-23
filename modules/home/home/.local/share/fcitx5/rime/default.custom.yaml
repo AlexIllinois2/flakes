@@ -1,0 +1,11 @@
+patch:
+  # 引入雾凇拼音的推荐配置（含 switcher/ascii_composer 等）
+  __include: rime_ice_suggestion:/
+
+  # 方案列表：第一项为默认方案
+  schema_list:
+    - schema: double_pinyin_flypy   # 默认：小鹤双拼
+    - schema: rime_ice              # 备用：雾凇拼音（全拼），Ctrl+` 切换
+
+  # 候选词个数
+  menu/page_size: 9

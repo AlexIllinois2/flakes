@@ -43,6 +43,7 @@ home-manager switch --flake ~/.local/proj/home-manager \
 ## after
 ``` bash
 fcitx5-remote -r # 重新部署rime
+fcitx5 -r -d  
 ```
 
 ## nur
