@@ -1,0 +1,70 @@
+{ config, pkgs, lib, options, ... }:
+let
+  # HM 24.11 起把 initExtra 改名为 initContent；24.05 只有旧名。
+  # 这里按当前 HM 提供的选项自动选择，桌面（unstable）仍用 initContent。
+  initSnippet = ''
+    source $HOME/.local/shell/zsh.zsh
+  '';
+in 
+{
+  programs.zsh = {
+    enable = true;
+
+    # 历史记录设置
+    history = {
+      size = 10000;
+      save = 10000;
+      ignoreDups = true;
+      path = "${config.home.homeDirectory}/.zsh_history";
+    };
+
+    enableCompletion = true;
+    autosuggestion.enable = true;
+    syntaxHighlighting.enable = true;
+    
+    plugins = [
+      {
+        name = "fzf-tab";
+        src = pkgs.fetchFromGitHub {
+          owner = "Aloxaf";
+          repo = "fzf-tab";
+          rev = "190500bf1de6a89416e2a74470d3b5cceab102ba"; # 或更新版本
+          sha256 = "1dipsy0s67fr47ig5559bcp1h5yn8rdjshhs8zsq7j8plvvh99qb";
+        };
+      }
+      {
+        name = "powerlevel10k";
+        src = pkgs.zsh-powerlevel10k;
+        file = "share/zsh-powerlevel10k/powerlevel10k.zsh-theme";
+      }
+    ];
+
+    initExtra = ''
+      # 加载 Powerlevel10k
+      #source ${pkgs.zsh-powerlevel10k}/share/zsh-powerlevel10k/powerlevel10k.zsh-theme
+      [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+      
+      # 加载其他自定义配置
+      [ -f "$HOME/.local/shell/zsh.zsh" ] && source "$HOME/.local/shell/zsh.zsh"
+    '';
+    
+    shellAliases = {
+      ll = "ls -l";
+    };
+  } // (if options.programs.zsh ? initContent
+    then { initContent = initSnippet; }
+    else { initExtra = initSnippet; });
+
+      # 自动化：在激活时尝试将 zsh 设为默认 shell
+  home.activation.makeZshDefault = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    ZSH_PATH="${config.programs.zsh.package}/bin/zsh"
+    if ! grep -q "$ZSH_PATH" /etc/shells 2>/dev/null; then
+      echo "正在将 $ZSH_PATH 添加到 /etc/shells (需要 sudo 权限)"
+      #echo "$ZSH_PATH" | /usr/bin/sudo tee -a /etc/shells
+    fi
+    if [ "$SHELL" != "$ZSH_PATH" ]; then
+      echo "正在切换默认 shell 为 zsh"
+      #/usr/bin/chsh -s "$ZSH_PATH"
+    fi
+  '';
+}
