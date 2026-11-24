@@ -1,28 +1,14 @@
 { config, pkgs, ... }: 
 
 {
-   home.packages = with pkgs.gnomeExtensions; [
-    net-speed-simplified
-    just-perfection
-    gsconnect
-  ];
-
   programs.gnome-shell = {
     enable = true;
     extensions = with pkgs.gnomeExtensions; [
-      net-speed-simplified
-      just-perfection
-      gsconnect
+      { package = net-speed-simplified; }
+      { package = just-perfection; }
+      { package = gsconnect; }
     ];
   };
 
   dconf.enable = true;
-  dconf.settings."org/gnome/shell" = {
-    disable-user-extensions = false;
-    enabled-extensions = with pkgs.gnomeExtensions; [
-      net-speed-simplified.extensionUuid
-      just-perfection.extensionUuid
-      gsconnect.extensionUuid
-    ];
-  };
 }

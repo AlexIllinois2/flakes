@@ -5,7 +5,7 @@
   services.desktopManager.gnome.enable = true;
 
   environment.systemPackages = with pkgs; [
-    chrome-gnome-shell
+    gnome-browser-connector
     gnomeExtensions.appindicator
     # gnomeExtensions.blur-my-shell
   ];
