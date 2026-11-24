@@ -24,5 +24,4 @@
   ];
 
   boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
-  virtualisationisation.kvm.enable = true;
 }
