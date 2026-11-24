@@ -20,9 +20,9 @@
     python3 python3Packages.pip python3Packages.virtualenv
 
     # ELF 分析（readelf/eu-stack/eu-readelf 等）
-    elfutils
+    qemu OVMF gdb binutils elfutils
   ];
 
-  # zoxide 已在 cmd/zsh.nix 通过 programs.zoxide.enable 启用（它会自动把
-  # 包加入 home.packages 并注入 zsh 集成），这里不再重复声明。
+  boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
+  virtualisationisation.kvm.enable = true;
 }

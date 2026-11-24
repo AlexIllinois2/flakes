@@ -48,6 +48,14 @@ fcitx5 -r -d
 - nix: `nix search nixpkgs <package>`
 - nur: https://nur.nix-community.org/repos/
 
+## 手动管理构建版本
+``` bash
+# 列表
+sudo nix-env --profile /nix/var/nix/profiles/system --list-generations
+# 清理, 保留最近5个
+sudo nix-env --profile /nix/var/nix/profiles/system --delete-generations +5
+```
+
 ## dev
 ``` bash
 nix develop path:./sdks/android
