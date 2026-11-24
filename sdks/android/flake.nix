@@ -27,9 +27,9 @@
           ];
         };
 
-        androidSdk = pkgs.androidenv.composeAndroidPackages {
+        androidSdk = (pkgs.androidenv.composeAndroidPackages {
           cmdLineToolsVersion = "8.0";
-          platformToolsVersion = "35.0.2";
+          platformToolsVersion = "37.0.1";
           buildToolsVersions = [ "35.0.0" ];
           platformVersions = [ "35" ];
           includeNDK = true;
@@ -39,12 +39,12 @@
 
         desktopLibs = with pkgs; [
           gtk3 webkitgtk_4_1 libsoup_3 cairo gdk-pixbuf glib
-          dbus openssl_3 librsvg
+          dbus openssl_3_5 librsvg
         ];
 
         common = with pkgs; [
           nodejs
-          nodePackages.pnpm
+          pnpm
           rustDesktop
           rust-analyzer
           pkg-config

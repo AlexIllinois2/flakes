@@ -16,27 +16,26 @@
     ];
   };
 ```
-然后先跑一次switch(#nixos / #home-manager), 让这两个先生效
-- *flake 只读 Git 索引，不读工作区未跟踪文件
-
-## nixos
+然后先跑一次switch让这两个先生效:
+- nixos
 ``` bash
+sudo nixos-rebuild build
 sudo nixos-rebuild switch
+```
+- home-manager
+``` bash
+home-manager build .
+home-manager switch .
+home-manager switch . \
+  --option substituters "https://mirrors.cernet.edu.cn/nix-channels/store?priority=10 https://mirrors.ustc.edu.cn/nix-channels/store?priority=10 https://mirror.sjtu.edu.cn/nix-channels/store?priority=10 https://cache.nixos.org/"
 ```
 
 ## flakes
+- *flake 只读 Git 索引，不读工作区未跟踪文件
 ``` bash
 sudo nixos-rebuild build --flake .#asus
 sudo nixos-rebuild switch --flake .#asus
 sudo nixos-rebuild boot --flake .#asus
-```
-
-## home-manager
-``` bash
-home-manager build --flake .
-home-manager switch --flake .
-home-manager switch --flake . \
-  --option substituters "https://mirrors.cernet.edu.cn/nix-channels/store?priority=10 https://mirrors.ustc.edu.cn/nix-channels/store?priority=10 https://mirror.sjtu.edu.cn/nix-channels/store?priority=10 https://cache.nixos.org/"
 ```
 
 ## after
