@@ -7,8 +7,8 @@
   #   git 335M / elfutils 91M / fzf 56M / bat 66M / fd 59M / eza 53M
   # 这些是 nix 生态里最常规的一套，不算“重量级”，故默认全部启用。
   environment.systemPackages = with pkgs; [
-    git
-    gh
+    openssl pkg-config
+    git gh
 
     # 搜索/筛选
     ripgrep # rg，比 grep 快的递归搜索
@@ -17,11 +17,10 @@
     bat # 二进制名为 bat（即 Debian 的 batcat）
     eza # ls 替代
 
+    python3 python3Packages.pip python3Packages.virtualenv
+
     # ELF 分析（readelf/eu-stack/eu-readelf 等）
     elfutils
-
-    openssl pkg-config
-    rustup
   ];
 
   # zoxide 已在 cmd/zsh.nix 通过 programs.zoxide.enable 启用（它会自动把
