@@ -24,18 +24,12 @@
       nixosConfigurations.asus = nixpkgs.lib.nixosSystem {
         inherit system pkgs;
         modules = [
-          ./configuration.nix
-          ./modules/cmd/cmd.nix
-          ./modules/gui/gui.nix
-          home-manager.nixosModules.home-manager
-          {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.users.v = import ./modules/home/home.nix;
-          }
+          ./hosts/asus/asus.nix
         ];
         specialArgs = {
+          inherit self; 
           inherit nur;
+          username = "v"; 
         };
       };
     };

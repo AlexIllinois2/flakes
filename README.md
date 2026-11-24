@@ -46,8 +46,9 @@ fcitx5-remote -r # 重新部署rime
 fcitx5 -r -d  
 ```
 
-## nur
-https://nur.nix-community.org/repos/
+## 包查找
+- nix: `nix search nixpkgs <package>`
+- nur: https://nur.nix-community.org/repos/
 
 ## tmp
 pkg pkgs
