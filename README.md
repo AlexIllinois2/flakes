@@ -16,7 +16,7 @@
     ];
   };
 ```
-然后先跑一次switch(#nixos / # home-manager), 让这两个先生效
+然后先跑一次switch(#nixos / #home-manager), 让这两个先生效
 - *flake 只读 Git 索引，不读工作区未跟踪文件
 
 ## nixos
@@ -26,17 +26,16 @@ sudo nixos-rebuild switch
 
 ## flakes
 ``` bash
-sudo nixos-rebuild build --flake .
-sudo nixos-rebuild switch --flake .
+sudo nixos-rebuild build --flake .#asus
 sudo nixos-rebuild switch --flake .#asus
 sudo nixos-rebuild boot --flake .#asus
 ```
 
 ## home-manager
 ``` bash
-home-manager build --flake ~/.local/proj/home-manager
-home-manager switch --flake ~/.local/proj/home-manager
-home-manager switch --flake ~/.local/proj/home-manager \
+home-manager build --flake .
+home-manager switch --flake .
+home-manager switch --flake . \
   --option substituters "https://mirrors.cernet.edu.cn/nix-channels/store?priority=10 https://mirrors.ustc.edu.cn/nix-channels/store?priority=10 https://mirror.sjtu.edu.cn/nix-channels/store?priority=10 https://cache.nixos.org/"
 ```
 
@@ -50,6 +49,7 @@ fcitx5 -r -d
 - nix: `nix search nixpkgs <package>`
 - nur: https://nur.nix-community.org/repos/
 
-## tmp
-pkg pkgs
-modules
+## dev
+``` bash
+nix develop path:./sdks/android
+```

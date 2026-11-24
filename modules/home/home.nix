@@ -6,6 +6,7 @@
   imports = [
     ./dotfile.nix
     ./zsh.nix
+    ./gnome.nix
   ];
 
   home.username = "${username}";

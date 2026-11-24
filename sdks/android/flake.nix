@@ -16,7 +16,7 @@
         cmdLineToolsVersion = "latest";
         platformToolsVersion = "latest";
         includeNDK = true;
-        ndkVersions = [ "29.0.13846066" ];   # 第一个会软链到 ndk-bundle
+        ndkVersions = [ "29.0.14206865" ];   # 第一个会软链到 ndk-bundle
         includeEmulator = true;
         includeSystemImages = true;
         abiVersions = [ "arm64-v8a" "x86_64" ];
