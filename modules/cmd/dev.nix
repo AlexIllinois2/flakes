@@ -17,7 +17,8 @@
     bat # 二进制名为 bat（即 Debian 的 batcat）
     eza # ls 替代
 
-    python3 python3Packages.pip python3Packages.virtualenv
+    python3 python3Packages.pip python3Packages.virtualenv 
+    uv
 
     # ELF 分析（readelf/eu-stack/eu-readelf 等）
     qemu OVMF gdb binutils elfutils

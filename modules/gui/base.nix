@@ -2,6 +2,7 @@
 
 {
   programs.firefox.enable = true;
+  services.flatpak.enable = true;
   environment.systemPackages = with pkgs; [
     brightnessctl 
     google-chrome vscodium
