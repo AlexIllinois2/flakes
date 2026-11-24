@@ -14,6 +14,7 @@
   outputs = { self, nixpkgs, home-manager, nur, ... }@inputs:
     let
       system = "x86_64-linux";
+      username = "v"; 
       pkgs = import nixpkgs {
         inherit system;
         config.allowUnfree = true;
@@ -24,12 +25,14 @@
       nixosConfigurations.asus = nixpkgs.lib.nixosSystem {
         inherit system pkgs;
         modules = [
+          home-manager.nixosModules.home-manager
           ./hosts/asus/asus.nix
         ];
         specialArgs = {
           inherit self; 
+          inherit inputs;
           inherit nur;
-          username = "v"; 
+          inherit username;
         };
       };
     };

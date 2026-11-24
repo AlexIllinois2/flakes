@@ -1,4 +1,4 @@
-{ self, config, pkgs, username, ... }: {
+{ self, config, pkgs, home-manager, username, ... }: {
   imports = [
     ./cpu.nix
     ./file_system.nix

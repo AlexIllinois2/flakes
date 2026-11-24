@@ -1,11 +1,8 @@
 { config, pkgs, home-manager, username, ... }:
 
 { 
-  imports = [
-    home-manager.nixosModules.home-manager
-  ];
-
   system.stateVersion = "26.05";
+  
   nix.package = pkgs.nix; 
   nix.settings = {
     experimental-features = [ "nix-command" "flakes" ];
@@ -33,6 +30,6 @@
   home-manager = {
     useGlobalPkgs = true;
     useUserPackages = true;
-    users.${username} = import ./home-config.nix;  # ← 指向 home-manager 配置
+    extraSpecialArgs = { inherit username; };
   };
 }

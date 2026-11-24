@@ -1,11 +1,4 @@
-{ config, pkgs, lib, options, ... }:
-let
-  # HM 24.11 起把 initExtra 改名为 initContent；24.05 只有旧名。
-  # 这里按当前 HM 提供的选项自动选择，桌面（unstable）仍用 initContent。
-  initSnippet = ''
-    source $HOME/.local/shell/zsh.zsh
-  '';
-in 
+{ config, pkgs, lib, ... }:
 {
   programs.zsh = {
     enable = true;
@@ -39,23 +32,20 @@ in
       }
     ];
 
-    initExtra = ''
+    initContent = ''
       # 加载 Powerlevel10k
-      #source ${pkgs.zsh-powerlevel10k}/share/zsh-powerlevel10k/powerlevel10k.zsh-theme
       [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-      
+
       # 加载其他自定义配置
       [ -f "$HOME/.local/shell/zsh.zsh" ] && source "$HOME/.local/shell/zsh.zsh"
     '';
-    
+
     shellAliases = {
       ll = "ls -l";
     };
-  } // (if options.programs.zsh ? initContent
-    then { initContent = initSnippet; }
-    else { initExtra = initSnippet; });
+  };
 
-      # 自动化：在激活时尝试将 zsh 设为默认 shell
+  # 自动化：在激活时尝试将 zsh 设为默认 shell
   home.activation.makeZshDefault = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     ZSH_PATH="${config.programs.zsh.package}/bin/zsh"
     if ! grep -q "$ZSH_PATH" /etc/shells 2>/dev/null; then
