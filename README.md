@@ -42,6 +42,10 @@ sudo nixos-rebuild boot --flake .#asus
 ``` bash
 fcitx5-remote -r # 重新部署rime
 fcitx5 -r -d  
+
+flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+flatpak remote-modify flathub https://mirrors.ustc.edu.cn/flathub
+flatpak install flathub it.mijorus.gearlever # 管理appimage
 ```
 
 ## 包查找
