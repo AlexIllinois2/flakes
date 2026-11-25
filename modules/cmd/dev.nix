@@ -22,6 +22,8 @@
 
     # ELF 分析（readelf/eu-stack/eu-readelf 等）
     qemu OVMF gdb binutils elfutils
+
+    gcc
   ];
 
   boot.binfmt.emulatedSystems = [ "aarch64-linux" ];

@@ -51,6 +51,7 @@ flatpak install flathub it.mijorus.gearlever # 管理appimage
 ## 包查找
 - nix: `nix search nixpkgs <package>`
 - nur: https://nur.nix-community.org/repos/
+- 直接安装: `nix profile install nixpkgs#<package>`
 
 ## 手动管理构建版本
 ``` bash

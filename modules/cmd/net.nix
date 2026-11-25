@@ -20,11 +20,8 @@ in
 
   environment.systemPackages =
     (with pkgs; [
-      curl
-      wget
-      aria2
-      fping
-      nmap
+      curl wget aria2
+      fping bind iproute2 net-tools nmap netcat tcpdump
     ])
     ++ lib.optionals (host.isx86_64) [
       # 桌面/普通 NixOS 主机：有 root 能力时 arp-scan 才能用；

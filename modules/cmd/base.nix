@@ -42,6 +42,8 @@
 
     vim
     bottom
+
+    pciutils lshw dmidecode usbutils util-linux 
   ];
 
   # ssh 不在这里声明：桌面由系统提供，xplay6 由 hosts/xplay6.nix 单独装
