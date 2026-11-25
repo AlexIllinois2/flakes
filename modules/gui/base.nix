@@ -6,7 +6,7 @@
     brightnessctl 
     google-chrome vscodium
     android-tools qtscrcpy
-    localsend clash-verge-rev
+    localsend
     nur.repos.lonerOrz.trae
     # nur.repos.MCSeekeri.workbuddy # 资源在 https://github.com/acgq/workbuddy-linux
   ];
