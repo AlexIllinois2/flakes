@@ -3,7 +3,7 @@
 {
   programs.firefox.enable = true;
   environment.systemPackages = with pkgs; [
-    brightnessctl 
+    libnotify brightnessctl 
     google-chrome vscodium
     android-tools qtscrcpy
     localsend
