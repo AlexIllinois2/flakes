@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+develop() {
+  nix develop $HOME/.local/proj/flakes/sdks/$1 -c zsh
+}
+
+case $1 in
+    android)  develop "$1" ;;
+    python) develop "$1" ;;
+    *) develop "$1" ;;
+esac
