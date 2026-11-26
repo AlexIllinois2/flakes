@@ -8,7 +8,6 @@
     android-tools qtscrcpy
     localsend
     self.packages.${pkgs.stdenv.hostPlatform.system}.trae-cn
-    # nur.repos.MCSeekeri.workbuddy # 资源在 https://github.com/acgq/workbuddy-linux
   ];
 
   # localsend端口放行

@@ -211,6 +211,12 @@ stdenv.mkDerivation (finalAttrs: {
     mv ./extracted/usr/share/bash-completion $out/share/bash-completion 2>/dev/null || true
     mv ./extracted/usr/share/mime $out/share/mime 2>/dev/null || true
 
+    # deb 只提供 share/pixmaps 下的单张图标；按 icon theme 规范
+    # 再装入 hicolor，桌面环境（GNOME 等）才能正确显示应用图标。
+    mkdir -p $out/share/icons/hicolor/1024x1024/apps
+    cp $out/share/pixmaps/trae-cn.png \
+      $out/share/icons/hicolor/1024x1024/apps/trae-cn.png
+
     mkdir -p $out/bin
     makeWrapper $out/share/trae-cn/bin/trae-cn $out/bin/trae-cn \
       --prefix LD_LIBRARY_PATH : "${lib.makeLibraryPath runtimeLibs}" \

@@ -107,17 +107,24 @@ in
 stdenvNoCC.mkDerivation {
   inherit pname version;
 
+  # 大文件优先用 $HOME/Downloads 下的同名文件，没有（或 hash 不符）时再从
+  # GitHub Releases 下载；两者 content hash 相同，store 路径一致。
+  # 不写死用户名：getEnv 只在 --impure 求值下生效；纯求值下读不到本地路径，
+  # tryEval 失败后自动走 fetchurl 分支，不影响别人构建。
   src =
     let
-      localFile = /home/v/Downloads/${fileName};
+      localFile = /. + (builtins.getEnv "HOME") + "/Downloads/" + fileName;
+      local = builtins.tryEval (
+        builtins.path {
+          path = localFile;
+          name = fileName;
+          recursive = false;
+          sha256 = srcHash;
+        }
+      );
     in
-    if builtins.pathExists localFile then
-      builtins.path {
-        path = localFile;
-        name = fileName;
-        recursive = false;
-        sha256 = srcHash;
-      }
+    if local.success then
+      local.value
     else
       fetchurl {
         url = "https://github.com/acgq/workbuddy-linux/releases/download/port-v${version}-r3/${fileName}";
@@ -140,7 +147,7 @@ stdenvNoCC.mkDerivation {
     cp -a . $out/opt/workbuddy/
 
     mkdir -p $out/bin $out/share/applications \
-      $out/share/icons/hicolor/1024x1024/apps
+      $out/share/pixmaps $out/share/icons/hicolor/1024x1024/apps
 
     makeWrapper $out/opt/workbuddy/launch-workbuddy $out/bin/workbuddy \
       --prefix LD_LIBRARY_PATH : "${lib.makeLibraryPath runtimeLibs}" \
@@ -155,9 +162,14 @@ stdenvNoCC.mkDerivation {
     EOF
     chmod +x $out/bin/workbuddy-cli
 
-    cp $out/opt/workbuddy/resources/app.asar.unpacked/resources/icon.png \
-      $out/share/icons/hicolor/1024x1024/apps/workbuddy.png
+    icon="$out/opt/workbuddy/resources/app.asar.unpacked/resources/icon.png"
+    cp "$icon" $out/share/pixmaps/workbuddy.png
+    cp "$icon" $out/share/icons/hicolor/1024x1024/apps/workbuddy.png
     cp ${desktopItem}/share/applications/workbuddy.desktop $out/share/applications/
+    # Icon 用包内图标的绝对路径：按主题名查找在本机 GNOME 下不可靠，
+    # 会回退成系统默认图标；绝对路径稳定生效，且图标与包同生命周期。
+    substituteInPlace $out/share/applications/workbuddy.desktop \
+      --replace-fail "Icon=workbuddy" "Icon=$icon"
 
     runHook postInstall
   '';
