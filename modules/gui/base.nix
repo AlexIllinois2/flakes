@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, self, ... }:
 
 {
   programs.firefox.enable = true;
@@ -7,7 +7,7 @@
     google-chrome vscodium
     android-tools qtscrcpy
     localsend
-    nur.repos.lonerOrz.trae
+    self.packages.${pkgs.stdenv.hostPlatform.system}.trae-cn
     # nur.repos.MCSeekeri.workbuddy # 资源在 https://github.com/acgq/workbuddy-linux
   ];
 

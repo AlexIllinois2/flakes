@@ -35,5 +35,11 @@
           inherit username;
         };
       };
+
+      packages.${system} = {
+        trae-cn = pkgs.callPackage ./pkgs/trae-cn { };
+        workbuddy = pkgs.callPackage ./pkgs/workbuddy { };
+        default = self.packages.${system}.workbuddy;
+      };
     };
 }
