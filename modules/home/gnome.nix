@@ -16,4 +16,8 @@
   dconf.settings."org/gnome/shell".disable-user-extensions = false;
 
   dconf.enable = true;
+
+  # 导出 GNOME 键盘设置
+  # dconf dump / | dconf2nix > gnome-keys.nix
+  # dconf dump /org/gnome/settings-daemon/plugins/media-keys/ | nix run nixpkgs#dconf2nix
 }

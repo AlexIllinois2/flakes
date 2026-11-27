@@ -5,6 +5,8 @@
 
   imports = [
     ./dotfile.nix
+    ./ssh.nix
+    ./git.nix
     ./zsh.nix
     ./gnome.nix
   ];

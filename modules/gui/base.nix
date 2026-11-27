@@ -3,6 +3,8 @@
 {
   programs.firefox.enable = true;
   environment.systemPackages = with pkgs; [
+    wl-clipboard xclip
+    dconf2nix
     desktop-file-utils libnotify brightnessctl 
     google-chrome vscodium
     android-tools qtscrcpy

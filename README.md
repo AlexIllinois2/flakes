@@ -7,7 +7,6 @@
   - 在/etc/nix/nix.conf中增加： `extra-substituters = https://mirrors.cernet.edu.cn/nix-channels/store?priority=10 https://mirrors.ustc.edu.cn/nix-channels/store?priority=10 https://mirror.sjtu.edu.cn/nix-channels/store?priority=10`
   - 在configuration.nix中增加： 
 ``` nix
-
   nix.settings = {
     extra-substituters = [
       "https://mirrors.cernet.edu.cn/nix-channels/store?priority=10"
