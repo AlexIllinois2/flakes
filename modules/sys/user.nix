@@ -17,6 +17,7 @@
       "kvm"            # 使用 /dev/kvm（Android Emulator、QEMU）
       "libvirtd"       # 如果你用 virt-manager / libvirt
       "docker"         # Docker（如果用 docker 而非 podman）
+      "podman"
 
       # ── 硬件 / 多媒体 ──
       "audio"          # 音频设备（pipewire/pulse）

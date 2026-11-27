@@ -5,6 +5,6 @@
     ./dev.nix
     ./net.nix
     ./appimage.nix
-    ./heavy.nix
+    ./distrobox.nix
   ];
 }
