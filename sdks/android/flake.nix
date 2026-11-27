@@ -39,7 +39,7 @@
 
         desktopLibs = with pkgs; [
           gtk3 webkitgtk_4_1 libsoup_3 cairo gdk-pixbuf glib
-          dbus openssl_3_5 librsvg
+          dbus openssl_3_5 librsvg xz
         ];
 
         common = with pkgs; [
