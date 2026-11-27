@@ -45,36 +45,44 @@
           dbus openssl_3_5 librsvg xz
         ];
 
-        # 插件会向拷入 AppDir 的 GTK 模块目录写缓存(immodules.cache 等),
-        # 但 nix store 源树只读且 cp -a 保留权限, 会导致写入失败;
-        # 生成一份可写的合并库树, 作为这些拷贝的源
-        gtkWritableLibs = pkgs.runCommand "gtk-libs-writable" { } ''
-          mkdir -p $out/lib
-          for p in ${pkgs.gtk3} ${pkgs.gdk-pixbuf} ${pkgs.glib} ${pkgs.gobject-introspection}; do
-            if [ -d "$p/lib" ]; then
-              cp -a "$p/lib/." "$out/lib/"
-            fi
-          done
-          chmod -R u+w $out
-        '';
+        # linuxdeploy-plugin-gtk 会向拷入 AppDir 的 GTK 模块目录写缓存
+        # (immodules.cache 等); nix store 输出一律只读(目录 555), cp -a 原样
+        # 保留权限导致写入失败。因此不能放 store 里, 而是在 shellHook 中
+        # 于运行时在用户缓存目录生成一份可写的合并库树(见 libClosureSetup)
+        gtkLibPkgPaths = pkgs.lib.concatMapStringsSep " " (p: "${pkgs.lib.getLib p}") [
+          pkgs.gtk3 pkgs.gdk-pixbuf pkgs.glib pkgs.gobject-introspection
+        ];
 
-        # linuxdeploy-plugin-gtk 通过 pkgconf 查询各路径; NixOS 下有两处不一致:
-        # 1. gio-2.0.pc 的 schemasdir 指向不含 schemas 的 out 输出(实际在 .dev)
-        # 2. 各 libdir 指向只读 nix store, 拷贝后无法写缓存
-        # 包装 pkgconf 把这些变量重定向到上面的可写库树, 其余透传
+        # 插件通过 pkgconf 查询路径, NixOS 下需要重定向一批变量到上面的
+        # 可写树(LD_GTK_LIBRARY_PATH 由 shellHook 运行时导出), 其余透传
         pkgconfGtkFix = pkgs.writeShellScriptBin "pkgconf" ''
           case "$1 $2" in
             "--variable=schemasdir gio-2.0")
-              echo "${pkgs.glib.dev}/share/glib-2.0/schemas"; exit 0 ;;
-            "--variable=libdir gtk+-3.0" | "--variable=libdir gdk-pixbuf-2.0" \
-              | "--variable=libdir gobject-2.0" | "--variable=libdir gio-2.0" \
+              # 指向运行时可写树中的 schemas 副本: 若直接用 glib.dev 的
+              # 只读目录, cp -a 会把 555/444 权限带进 AppDir, 导致 bundler
+              # 下次构建 remove_dir_all 清理失败
+              echo "$LD_GTK_LIBRARY_PATH/../schemas"; exit 0 ;;
+            "--variable=libdir gtk+-3.0")
+              echo "$LD_GTK_LIBRARY_PATH"; exit 0 ;;
+            "--variable=gdk_pixbuf_binarydir gdk-pixbuf-2.0")
+              echo "$LD_GTK_LIBRARY_PATH/gdk-pixbuf-2.0/2.10.0"; exit 0 ;;
+            "--variable=gdk_pixbuf_cache_file gdk-pixbuf-2.0")
+              echo "$LD_GTK_LIBRARY_PATH/gdk-pixbuf-2.0/2.10.0/loaders.cache"; exit 0 ;;
+            "--variable=gdk_pixbuf_moduledir gdk-pixbuf-2.0")
+              echo "$LD_GTK_LIBRARY_PATH/gdk-pixbuf-2.0/2.10.0/loaders"; exit 0 ;;
+            "--variable=giomoduledir gio-2.0")
+              echo "$LD_GTK_LIBRARY_PATH/gio/modules"; exit 0 ;;
+            "--variable=typelibdir gobject-introspection-1.0")
+              echo "$LD_GTK_LIBRARY_PATH/girepository-1.0"; exit 0 ;;
+            # "Copying more libraries" 步骤(libdir gobject/gio/gdk-pixbuf/
+            # librsvg/pango) 在 linuxdeploy 插件模式下解析依赖会触发 abort,
+            # 且主阶段早已部署过二进制的完整依赖闭包, 该步骤纯属冗余;
+            # 指向空目录使其无库可部署, 直接跳过
+            "--variable=libdir gobject-2.0" | "--variable=libdir gio-2.0" \
+              | "--variable=libdir gdk-pixbuf-2.0" | "--variable=libdir librsvg-2.0" \
               | "--variable=libdir pango" | "--variable=libdir pangocairo" \
               | "--variable=libdir pangoft2")
-              echo "${gtkWritableLibs}/lib"; exit 0 ;;
-            "--variable=giomoduledir gio-2.0")
-              echo "${gtkWritableLibs}/lib/gio/modules"; exit 0 ;;
-            "--variable=typelibdir gobject-introspection-1.0")
-              echo "${gtkWritableLibs}/lib/girepository-1.0"; exit 0 ;;
+              echo "$LD_GTK_LIBRARY_PATH/.empty-libs"; exit 0 ;;
           esac
           exec "${pkgs.pkg-config}/bin/pkg-config" "$@"
         '';
@@ -87,6 +95,8 @@
           pkg-config
           gobject-introspection
           pkgconfGtkFix
+          gtk3.dev
+          gdk-pixbuf.dev
           cargo-tauri
           bacon
         ];
@@ -113,9 +123,25 @@
             fi
           }
           export LD_LIBRARY_PATH="$(_lib_closure "${libPkgPaths}")"
-          # linuxdeploy-plugin-gtk (tauri bundler 恒定启用 --plugin gtk) 在 NixOS 上
-          # 探测不到 /usr/lib,会以空值调 realpath 直接失败;显式指定 gtk 库目录
-          export LD_GTK_LIBRARY_PATH="${gtkWritableLibs}/lib"
+          # 运行时构建可写 GTK 库树, 供 linuxdeploy-plugin-gtk 拷贝并写缓存
+          # (nix store 输出只读, 不能作为带写入的拷贝源)
+          _gtkw_key=$(printf '%s' "${gtkLibPkgPaths}" | sha256sum | cut -c1-12)
+          _gtkw="''${XDG_CACHE_HOME:-$HOME/.cache}/tauri-gtk-libs-writable-$_gtkw_key"
+          if [ ! -d "$_gtkw/lib/gtk-3.0" ] || [ ! -d "$_gtkw/schemas" ]; then
+            rm -rf "$_gtkw"
+            mkdir -p "$_gtkw/lib"
+            for p in ${gtkLibPkgPaths}; do
+              [ -d "$p/lib" ] && cp -a "$p/lib/." "$_gtkw/lib/"
+              chmod -R u+w "$_gtkw"
+            done
+            # gio modules 可能不存在, 但插件需要向其中写 giomodule.cache
+            mkdir -p "$_gtkw/lib/gio/modules" "$_gtkw/lib/.empty-libs"
+            # schemas 同理需要可写副本(源头是只读的 glib.dev)
+            cp -a "${pkgs.glib.dev}/share/glib-2.0/schemas" "$_gtkw/schemas"
+            chmod -R u+w "$_gtkw"
+          fi
+          export LD_GTK_LIBRARY_PATH="$_gtkw/lib"
+          unset _gtkw _gtkw_key
           unset -f _lib_closure
         '';
       in {
