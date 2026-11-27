@@ -2,7 +2,7 @@
   programs.ssh = {
     enable = true;
 
-    matchBlocks = {
+    settings = {
       # 属性名 = Host 别名
       "github.com" = {
         hostname = "ssh.github.com";   # 对应 HostName
