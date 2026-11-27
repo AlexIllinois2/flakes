@@ -34,6 +34,10 @@
       # (pkgs.runCommand "steamrun-lib" {} "mkdir $out; ln -s ${pkgs.steam-run.fhsenv}/usr/lib64 $out/lib")
     ];
   };
+  
+  systemd.tmpfiles.rules = [
+    "L /bin/bash - - - - /run/current-system/sw/bin/bash"
+  ];
 
   home-manager = {
     useGlobalPkgs = true;
