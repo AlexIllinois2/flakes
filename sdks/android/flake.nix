@@ -1,4 +1,6 @@
 {
+  # 运行: nix develop path:./sdks/android
+
   inputs = {
     # 钉在与系统 NixOS 相同的 nixpkgs 修订上（26.05, glibc 2.42），
     # 避免 devshell(unstable/glibc 2.44) 与系统(26.05/2.42) 混代导致

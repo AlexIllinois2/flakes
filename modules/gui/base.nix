@@ -7,7 +7,7 @@
     dconf2nix
     desktop-file-utils libnotify brightnessctl 
     google-chrome vscodium
-    android-tools qtscrcpy
+    android-tools
     localsend
     self.packages.${pkgs.stdenv.hostPlatform.system}.trae-cn
   ];

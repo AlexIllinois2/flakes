@@ -62,8 +62,3 @@ sudo nix-env --profile /nix/var/nix/profiles/system --delete-generations +5
 
 ## other
 刷新桌面图标: `update-desktop-database ~/.nix-profile/share/applications`
-
-## dev
-``` bash
-nix develop path:./sdks/android
-```
