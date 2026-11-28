@@ -37,6 +37,7 @@
       };
 
       packages.${system} = {
+        qoder = pkgs.callPackage ./pkgs/qoder { };
         trae-cn = pkgs.callPackage ./pkgs/trae-cn { };
         workbuddy = pkgs.callPackage ./pkgs/workbuddy { };
         default = self.packages.${system}.workbuddy;
